@@ -1,11 +1,11 @@
 package githubdigest
 
-import "time"
-import "strings"
-import "golang.org/x/oauth2"
 import (
-	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
+	"time"
+	"strings"
 
+	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/oauth2"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
 )
 
 type GithubDigester struct {

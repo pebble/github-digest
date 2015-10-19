@@ -14,9 +14,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/jwt"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/net/context"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/oauth2"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/oauth2/jwt"
 	"google.golang.org/cloud/compute/metadata"
 )
 

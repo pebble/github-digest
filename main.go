@@ -1,14 +1,16 @@
 package main
 
-import "encoding/json"
-import "fmt"
-import "math"
-import "os"
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"math"
+	"os"
+	"time"
+	"html/template"
 
-import "github.com/codegangsta/cli"
-import "github.com/pebble/github-digest/githubdigest"
-
+	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/codegangsta/cli"
+	"github.com/pebble/github-digest/githubdigest"
+)
 
 func dateArg(cutoff int) time.Time {
 	inv_cutoff := math.Abs(float64(cutoff)) * -1
@@ -23,19 +25,23 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
-			Name: "cutoff",
+			Name:  "cutoff",
 			Value: 21,
 			Usage: "Days of pulls to consider",
 		},
 		cli.IntFlag{
-			Name: "closed-cutoff",
+			Name:  "closed-cutoff",
 			Value: 1,
 			Usage: "Days of merged pulls to consider",
 		},
 		cli.StringFlag{
-			Name: "oauth",
-			Usage: "Github OAuth token",
+			Name:   "oauth",
+			Usage:  "Github OAuth token",
 			EnvVar: "GITHUB_OAUTH_TOKEN",
+		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Dump JSON instead of HTML",
 		},
 	}
 
@@ -60,8 +66,16 @@ func main() {
 		digester := githubdigest.NewDigester(oauth_token)
 		stats := digester.GetDigest(repos, stat_cutoff, closed_cutoff)
 
-		stats_json, _ := json.Marshal(stats)
-		fmt.Println(string(stats_json))
+		if c.Bool("json") {
+			stats_json, _ := json.Marshal(stats)
+			fmt.Println(string(stats_json))
+		} else {
+			t, err := template.ParseFiles("report.html")
+			if err != nil {
+				fmt.Printf("%s\n", err)
+			}
+			t.Execute(os.Stdout, stats)
+		}
 	}
 
 	app.Run(os.Args)

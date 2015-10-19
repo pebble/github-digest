@@ -1,15 +1,15 @@
 package githubdigest
 
 import (
-	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
 	"time"
-)
 
+	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
+)
 
 type PullRequestStats struct {
 	Project      string    `json:"project"`
 	Number       int       `json:"number"`
-	Title		 string    `json:"title"`
+	Title        string    `json:"title"`
 	User         string    `json:"user"`
 	MergedBy     *string   `json:"merged_by,omitempty"`
 	CreatedAt    time.Time `json:"created_at"`

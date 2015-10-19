@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+{{ if .Open }}
+<table summary="Open pull requests" border="1" width="100%">
+    <thead>
+    <tr>
+        <td>Open PR</td>
+        <td>Title</td>
+        <td>Size</td>
+        <td>Author</td>
+        <td>Created</td>
+        <td>Updated</td>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range .Open }}
+    <tr>
+        <td>
+            <a href="https://github.com/{{.Project}}/pull/{{.Number}}">{{.Project}}
+                #{{.Number}}</a>
+        </td>
+        <td>{{.Title}}</td>
+        <td>+{{.Additions}}/-{{.Deletions}} ({{.ChangedFiles}})</td>
+        <td>{{.User}}</td>
+        <td>{{.CreatedAt}}</td>
+        <td>{{.UpdatedAt}}</td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+{{ else }}
+No open PRs, nice reviewing!
+{{ end }}
+
+<br/>
+
+{{ if .Closed }}
+<table summary="Closed pull requests" border="1" width="100%">
+    <thead>
+    <tr>
+        <td>Closed PR</td>
+        <td>Title</td>
+        <td>Author</td>
+        <td>Approver</td>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range .Closed }}
+    <tr>
+        <td>
+            <a href="https://github.com/{{.Project}}/pull/{{.Number}}">{{.Project}}
+                #{{.Number}}</a>
+        </td>
+        <td>{{.Title}}</td>
+        <td>{{.User}}</td>
+        <td>{{.MergedBy}}</td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+{{ else }}
+No closed PRs
+{{ end }}
+
+<br/>
+
+<table summary="User stats" border="1" width="50%">
+    <thead>
+    <tr>
+        <td>Member</td>
+        <td>Opened</td>
+        <td>Closed</td>
+        <td>Comments</td>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range $name, $data := .Users }}
+    <tr>
+        <td>{{$name}}</td>
+        <td>{{$data.Open}}</td>
+        <td>{{$data.Closed}}</td>
+        <td>{{$data.Comments}}</td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+</html>
+
