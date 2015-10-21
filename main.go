@@ -13,8 +13,8 @@ import (
 )
 
 func dateArg(cutoff int) time.Time {
-	inv_cutoff := math.Abs(float64(cutoff)) * -1
-	return time.Now().AddDate(0, 0, int(inv_cutoff))
+	invertedCutoff := math.Abs(float64(cutoff)) * -1
+	return time.Now().AddDate(0, 0, int(invertedCutoff))
 }
 
 func main() {
@@ -46,8 +46,8 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-		oauth_token := c.String("oauth")
-		if oauth_token == "" {
+		oauthToken := c.String("oauth")
+		if oauthToken == "" {
 			fmt.Println("Ouath token is required. Create one at https://github.com/settings/tokens")
 			cli.ShowAppHelp(c)
 			return
@@ -60,19 +60,24 @@ func main() {
 			return
 		}
 
-		stat_cutoff := dateArg(c.Int("cutoff"))
-		closed_cutoff := dateArg(c.Int("closed-cutoff"))
+		statCutoff := dateArg(c.Int("cutoff"))
+		closedCutoff := dateArg(c.Int("closed-cutoff"))
 
-		digester := githubdigest.NewDigester(oauth_token)
-		stats := digester.GetDigest(repos, stat_cutoff, closed_cutoff)
+		digester := githubdigest.NewDigester(oauthToken)
+		stats, err := digester.GetDigest(repos, statCutoff, closedCutoff)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
 		if c.Bool("json") {
-			stats_json, _ := json.Marshal(stats)
-			fmt.Println(string(stats_json))
+			statsJson, _ := json.Marshal(stats)
+			fmt.Println(string(statsJson))
 		} else {
 			t, err := template.ParseFiles("report.html")
 			if err != nil {
 				fmt.Printf("%s\n", err)
+				return
 			}
 			t.Execute(os.Stdout, stats)
 		}
