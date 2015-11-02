@@ -34,7 +34,7 @@ func main() {
 			Name:  "closed-cutoff",
 			Value: 1,
 			Usage: "Days of merged pulls to consider",
-			EnvVar: "GITHUB_CLOSED_CUTUFF",
+			EnvVar: "GITHUB_CLOSED_CUTOFF",
 		},
 		cli.StringFlag{
 			Name:   "oauth",
