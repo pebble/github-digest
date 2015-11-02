@@ -1,7 +1,22 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
 {{ if .Open }}
-<table summary="Open pull requests" border="1" width="100%">
+<table summary="Open pull requests" width="100%">
     <thead>
     <tr>
         <td>Open PR</td>
@@ -30,12 +45,14 @@
 </table>
 {{ else }}
 No open PRs, nice reviewing!
+<br/>
+<br/>
 {{ end }}
 
 <br/>
 
 {{ if .Closed }}
-<table summary="Closed pull requests" border="1" width="100%">
+<table summary="Closed pull requests" width="100%">
     <thead>
     <tr>
         <td>Closed PR</td>
@@ -60,11 +77,13 @@ No open PRs, nice reviewing!
 </table>
 {{ else }}
 No closed PRs
+<br/>
+<br/>
 {{ end }}
 
 <br/>
 
-<table summary="User stats" border="1" width="50%">
+<table summary="User stats" width="50%">
     <thead>
     <tr>
         <td>Member</td>
@@ -84,5 +103,6 @@ No closed PRs
     {{ end }}
     </tbody>
 </table>
+</body>
 </html>
 

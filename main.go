@@ -28,11 +28,13 @@ func main() {
 			Name:  "cutoff",
 			Value: 21,
 			Usage: "Days of pulls to consider",
+			EnvVar: "GITHUB_CUTOFF",
 		},
 		cli.IntFlag{
 			Name:  "closed-cutoff",
 			Value: 1,
 			Usage: "Days of merged pulls to consider",
+			EnvVar: "GITHUB_CLOSED_CUTUFF",
 		},
 		cli.StringFlag{
 			Name:   "oauth",
@@ -42,6 +44,10 @@ func main() {
 		cli.BoolFlag{
 			Name:  "json",
 			Usage: "Dump JSON instead of HTML",
+		},
+		cli.StringSliceFlag{
+			Name: "repos",
+			EnvVar: "GITHUB_REPOS",
 		},
 	}
 
@@ -53,7 +59,11 @@ func main() {
 			return
 		}
 
-		repos := c.Args()
+		repos := c.StringSlice("repos")
+		if len(repos) == 0 {
+			repos = c.Args()
+		}
+
 		if len(repos) == 0 {
 			fmt.Println("Specify at least 1 repo")
 			cli.ShowAppHelp(c)
