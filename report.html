@@ -5,9 +5,11 @@
         table {
             border-collapse: collapse;
         }
+
         thead td {
             font-weight: bold;
         }
+
         td {
             border: 1px solid black;
         }
@@ -83,6 +85,7 @@ No closed PRs
 
 <br/>
 
+{{ if .Users }}
 <table summary="User stats" width="50%">
     <thead>
     <tr>
@@ -103,6 +106,30 @@ No closed PRs
     {{ end }}
     </tbody>
 </table>
+{{ else }}
+No user stats
+<br/>
+<br/>
+{{ end }}
+
+<br/>
+
+<table summary="Repository list" width="33%">
+    <thead>
+    <tr>
+        <td>Repositories</td>
+    </tr>
+    </thead>
+    <tbody>
+    {{ range .Repos }}
+    <tr>
+        <td>{{.}}</td>
+    </tr>
+    {{ end }}
+    </tbody>
+</table>
+
+
 </body>
 </html>
 

@@ -1,11 +1,11 @@
 package githubdigest
 
 import (
-	"time"
 	"strings"
+	"time"
 
-	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/oauth2"
 	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/golang.org/x/oauth2"
 )
 
 type GithubDigester struct {
@@ -30,9 +30,8 @@ func NewDigester(oauthToken string) GithubDigester {
 	return GithubDigester{client: client}
 }
 
-
 func (d GithubDigester) GetDigest(repositories []string, statCutoff time.Time, closedCutoff time.Time) (*GithubDigest, error) {
-	stats := NewGithubDigest()
+	stats := NewGithubDigest(repositories)
 
 	openPr := &github.PullRequestListOptions{State: "open", Sort: "updated", Direction: "desc"}
 	closedPr := &github.PullRequestListOptions{State: "closed", Sort: "updated", Direction: "desc"}
@@ -101,7 +100,6 @@ func (d GithubDigester) GetDigest(repositories []string, statCutoff time.Time, c
 
 	return stats, nil
 }
-
 
 func (d GithubDigester) addCommentStats(owner string, repo string, pull int, stats *GithubDigest) error {
 	prComments, _, err := d.client.PullRequests.ListComments(owner, repo, pull, nil)

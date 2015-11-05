@@ -1,15 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
 	"os"
 	"time"
-	"html/template"
 
-	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/codegangsta/cli"
 	"github.com/pebble/github-digest/githubdigest"
+	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/codegangsta/cli"
 )
 
 func dateArg(cutoff int) time.Time {
@@ -25,15 +23,15 @@ func main() {
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
-			Name:  "cutoff",
-			Value: 21,
-			Usage: "Days of pulls to consider",
+			Name:   "cutoff",
+			Value:  21,
+			Usage:  "Days of pulls to consider",
 			EnvVar: "GITHUB_CUTOFF",
 		},
 		cli.IntFlag{
-			Name:  "closed-cutoff",
-			Value: 1,
-			Usage: "Days of merged pulls to consider",
+			Name:   "closed-cutoff",
+			Value:  1,
+			Usage:  "Days of merged pulls to consider",
 			EnvVar: "GITHUB_CLOSED_CUTOFF",
 		},
 		cli.StringFlag{
@@ -46,8 +44,30 @@ func main() {
 			Usage: "Dump JSON instead of HTML",
 		},
 		cli.StringSliceFlag{
-			Name: "repos",
+			Name:   "repos",
 			EnvVar: "GITHUB_REPOS",
+		},
+		cli.StringFlag{
+			Name:   "mail-to",
+			Usage:  "Email recipient",
+			EnvVar: "DIGEST_MAIL_TO",
+		},
+		cli.StringFlag{
+			Name:   "mail-from",
+			Usage:  "Email sender",
+			Value:  "noreply@pebble.com",
+			EnvVar: "DIGEST_MAIL_FROM",
+		},
+		cli.StringFlag{
+			Name:   "mailgun",
+			Usage:  "MailGun API key",
+			EnvVar: "DIGEST_MAILGUN_API_KEY",
+		},
+		cli.StringFlag{
+			Name:   "mailgun-domain",
+			Usage:  "MailGun domain",
+			Value:  "getpebble.com",
+			EnvVar: "DIGEST_MAILGUN_DOMAIN",
 		},
 	}
 
@@ -73,6 +93,7 @@ func main() {
 		statCutoff := dateArg(c.Int("cutoff"))
 		closedCutoff := dateArg(c.Int("closed-cutoff"))
 
+		// Collect stats:
 		digester := githubdigest.NewDigester(oauthToken)
 		stats, err := digester.GetDigest(repos, statCutoff, closedCutoff)
 		if err != nil {
@@ -80,17 +101,15 @@ func main() {
 			return
 		}
 
-		if c.Bool("json") {
-			statsJson, _ := json.Marshal(stats)
-			fmt.Println(string(statsJson))
-		} else {
-			t, err := template.ParseFiles("report.html")
-			if err != nil {
-				fmt.Printf("%s\n", err)
-				return
-			}
-			t.Execute(os.Stdout, stats)
+		// Generate report:
+		report, err := githubdigest.GenerateReport(c, stats)
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
+
+		// Output:
+		githubdigest.SendReport(c, *report)
 	}
 
 	app.Run(os.Args)

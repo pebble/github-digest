@@ -26,16 +26,18 @@ type UserStats struct {
 }
 
 type GithubDigest struct {
-	Open   []PullRequestStats `json:"open"`
-	Closed []PullRequestStats `json:"closed"`
+	Open   []PullRequestStats    `json:"open"`
+	Closed []PullRequestStats    `json:"closed"`
 	Users  map[string]*UserStats `json:"users"`
+	Repos  []string              `json:"repos"`
 }
 
-func NewGithubDigest() *GithubDigest {
+func NewGithubDigest(repositories []string) *GithubDigest {
 	return &GithubDigest{
-		Users:make(map[string]*UserStats),
-		Open:make([]PullRequestStats, 0),
-		Closed:make([]PullRequestStats, 0),
+		Repos:  repositories,
+		Users:  make(map[string]*UserStats),
+		Open:   make([]PullRequestStats, 0),
+		Closed: make([]PullRequestStats, 0),
 	}
 }
 
@@ -49,15 +51,15 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 	}
 
 	return PullRequestStats{
-		Project: project,
-		Number: *pull.Number,
-		Title: *pull.Title,
-		User: *pull.User.Login,
-		MergedBy: mergedBy,
-		CreatedAt: *pull.CreatedAt,
-		UpdatedAt: updatedAt,
-		Additions: *pull.Additions,
-		Deletions: *pull.Deletions,
+		Project:      project,
+		Number:       *pull.Number,
+		Title:        *pull.Title,
+		User:         *pull.User.Login,
+		MergedBy:     mergedBy,
+		CreatedAt:    *pull.CreatedAt,
+		UpdatedAt:    updatedAt,
+		Additions:    *pull.Additions,
+		Deletions:    *pull.Deletions,
 		ChangedFiles: *pull.ChangedFiles,
 	}
 }
@@ -68,8 +70,8 @@ func (d GithubDigest) GetUser(user *github.User) *UserStats {
 		return stats
 	} else {
 		stats := &UserStats{
-			Open: 0,
-			Closed: 0,
+			Open:     0,
+			Closed:   0,
 			Comments: 0,
 		}
 		d.Users[username] = stats

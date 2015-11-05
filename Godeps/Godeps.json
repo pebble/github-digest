@@ -16,6 +16,14 @@
 			"Rev": "547ef5ac979778feb2f760cdb5f4eae1a2207b86"
 		},
 		{
+			"ImportPath": "github.com/mailgun/mailgun-go",
+			"Rev": "343a8f098a77b95ca17181df58dc393612f19408"
+		},
+		{
+			"ImportPath": "github.com/mbanzon/simplehttp",
+			"Rev": "04c542e7ac706a25820090f274ea6a4f39a63326"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "21c3935a8fc0f954d03e6b8a560c9600ffee38d2"
 		},
