@@ -45,7 +45,7 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 	var updatedAt = *pull.UpdatedAt
 	var mergedBy *string
 	if pull.MergedBy != nil {
-		mergedBy = &(*pull.MergedBy.Login)
+		mergedBy = &(*pull.MergedBy.Name)
 		// Ignore post-merge comments:
 		updatedAt = *pull.MergedAt
 	}
@@ -54,7 +54,7 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 		Project:      project,
 		Number:       *pull.Number,
 		Title:        *pull.Title,
-		User:         *pull.User.Login,
+		User:         *pull.User.Name,
 		MergedBy:     mergedBy,
 		CreatedAt:    *pull.CreatedAt,
 		UpdatedAt:    updatedAt,
@@ -65,7 +65,7 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 }
 
 func (d GithubDigest) GetUser(user *github.User) *UserStats {
-	username := *user.Login
+	username := *user.Name
 	if stats, exists := d.Users[username]; exists {
 		return stats
 	} else {
