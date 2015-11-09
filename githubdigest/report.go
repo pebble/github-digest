@@ -31,7 +31,6 @@ func GenerateReport(c *cli.Context, stats *GithubDigest) (*string, error) {
 	return &report, nil
 }
 
-
 func SendReport(c *cli.Context, report string) error {
 	mailgunApiKey := c.String("mailgun")
 	emailTo := c.String("mail-to")
@@ -57,5 +56,3 @@ func SendReport(c *cli.Context, report string) error {
 	}
 	return nil
 }
-
-
