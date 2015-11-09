@@ -1,9 +1,8 @@
 package githubdigest
 
 import (
-	"time"
-
 	"github.com/pebble/github-digest/Godeps/_workspace/src/github.com/google/go-github/github"
+	"time"
 )
 
 type PullRequestStats struct {
@@ -32,6 +31,13 @@ type GithubDigest struct {
 	Repos  []string              `json:"repos"`
 }
 
+func userName(user *github.User) string {
+	if user.Name != nil {
+		return *user.Name
+	}
+	return *user.Login
+}
+
 func NewGithubDigest(repositories []string) *GithubDigest {
 	return &GithubDigest{
 		Repos:  repositories,
@@ -45,7 +51,8 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 	var updatedAt = *pull.UpdatedAt
 	var mergedBy *string
 	if pull.MergedBy != nil {
-		mergedBy = &(*pull.MergedBy.Name)
+		mergedByUser := userName(pull.MergedBy)
+		mergedBy = &mergedByUser
 		// Ignore post-merge comments:
 		updatedAt = *pull.MergedAt
 	}
@@ -54,7 +61,7 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 		Project:      project,
 		Number:       *pull.Number,
 		Title:        *pull.Title,
-		User:         *pull.User.Name,
+		User:         userName(pull.User),
 		MergedBy:     mergedBy,
 		CreatedAt:    *pull.CreatedAt,
 		UpdatedAt:    updatedAt,
@@ -65,7 +72,7 @@ func NewPullRequestStats(project string, pull github.PullRequest) PullRequestSta
 }
 
 func (d GithubDigest) GetUser(user *github.User) *UserStats {
-	username := *user.Name
+	username := userName(user)
 	if stats, exists := d.Users[username]; exists {
 		return stats
 	} else {
